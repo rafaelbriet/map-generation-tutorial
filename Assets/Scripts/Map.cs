@@ -6,13 +6,21 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
+    [Header("Generation Settings")]
+    [SerializeField]
+    private int numberOfRooms = 10;
+    [SerializeField]
+    private bool ignoreRoomWithNeighbor = true;
+    [SerializeField]
+    private bool complyWithNumberOfRooms = true;
+    [SerializeField]
+    [Range(0f, 0.9f)]
+    private float roomGiveUpChance = 0.5f;
     [Header("Map")]
     [SerializeField]
     private int width = 10;
     [SerializeField]
     private int height = 10;
-    [SerializeField]
-    private int numberOfRooms = 10;
     [Header("Rooms")]
     [SerializeField]
     private float roomWidth = 10;
@@ -98,19 +106,19 @@ public class Map : MonoBehaviour
                         continue;
                     }
 
-                    if (HasMoreThanOneNeighbor(neighbor))
+                    if (ignoreRoomWithNeighbor && HasMoreThanOneNeighbor(neighbor))
                     {
                         continue;
                     }
 
                     bool hasEnoughRoom = roomsCount >= numberOfRooms;
 
-                    if (hasEnoughRoom)
+                    if (complyWithNumberOfRooms && hasEnoughRoom)
                     {
                         continue;
                     }
 
-                    bool shouldGiveUp = UnityEngine.Random.Range(0, 1f) < 0.5f;
+                    bool shouldGiveUp = UnityEngine.Random.Range(0, 1f) < roomGiveUpChance;
 
                     if (shouldGiveUp)
                     {
