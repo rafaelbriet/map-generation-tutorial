@@ -15,7 +15,7 @@ public class Map : MonoBehaviour
     [SerializeField]
     private GameObject roomPrefab;
 
-    Room[,] map;
+    private Room[,] map;
 
     private void Awake()
     {
