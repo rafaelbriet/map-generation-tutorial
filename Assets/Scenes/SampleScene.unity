@@ -240,6 +240,8 @@ MonoBehaviour:
   height: 10
   numberOfRooms: 10
   roomPrefab: {fileID: 3642142289418280711, guid: 032e0abf699fd1944882d41bd8a740d6, type: 3}
+  roomBossPrefab: {fileID: 3642142289418280711, guid: 499127d2396ac8b4aa70c7d22ee93892, type: 3}
+  roomTreasurePrefab: {fileID: 3642142289418280711, guid: 50073d46a9b27924aa41fc1adb5b5666, type: 3}
 --- !u!4 &1505303594
 Transform:
   m_ObjectHideFlags: 0

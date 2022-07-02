@@ -14,8 +14,13 @@ public class Map : MonoBehaviour
     private int numberOfRooms = 10;
     [SerializeField]
     private GameObject roomPrefab;
+    [SerializeField]
+    private GameObject roomBossPrefab;
+    [SerializeField]
+    private GameObject roomTreasurePrefab;
 
     private Room[,] map;
+    private List<Room> deadEndRooms = new List<Room>();
 
     private void Awake()
     {
@@ -54,6 +59,7 @@ public class Map : MonoBehaviour
         while (roomsCount < numberOfRooms)
         {
             map = InitializeMap();
+            deadEndRooms.Clear();
 
             Room startingRoom = map[width / 2, height / 2];
             startingRoom.IsSelected = true;
@@ -67,6 +73,7 @@ public class Map : MonoBehaviour
             {
                 Room currentRoom = roomsToVisit.Dequeue();
                 List<Room> currentRoomNeighbors = GetNeighbors(currentRoom);
+                bool hasAddedNewRoom = false;
 
                 foreach (Room neighbor in currentRoomNeighbors)
                 {
@@ -97,6 +104,12 @@ public class Map : MonoBehaviour
                     neighbor.IsSelected = true;
                     roomsToVisit.Enqueue(neighbor);
                     roomsCount++;
+                    hasAddedNewRoom = true;
+                }
+
+                if (!hasAddedNewRoom)
+                {
+                    deadEndRooms.Add(currentRoom);
                 }
             }
         }
@@ -104,19 +117,52 @@ public class Map : MonoBehaviour
 
     private void PlaceRooms()
     {
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                Room room = map[x, y];
+        PlaceNormalRooms();
+        PlaceBossRoom();
+        PlaceTreasureRooms();
+    }
 
-                if (room.IsSelected)
-                {
-                    Vector3 roomPosition = new Vector3(room.Position.x * 10, room.Position.y * 10);
-                    Instantiate(roomPrefab, roomPosition, Quaternion.identity, transform);
-                }
+    private void PlaceNormalRooms()
+    {
+        foreach (Room room in map)
+        {
+            if (room.IsSelected && !deadEndRooms.Contains(room))
+            {
+                InstantiateRoom(roomPrefab, room);
             }
         }
+    }
+
+    private void PlaceBossRoom()
+    {
+        Room room = deadEndRooms.Last();
+        InstantiateRoom(roomBossPrefab, room);
+    }
+
+    private void PlaceTreasureRooms()
+    {
+        List<Room> rooms = deadEndRooms.Where(room => room != deadEndRooms.Last()).ToList();
+
+        foreach (Room room in rooms)
+        {
+            float treasureChance = UnityEngine.Random.Range(0f, 1f);
+            bool hasTreasure = treasureChance > 0.7f;
+
+            if (hasTreasure)
+            {
+                InstantiateRoom(roomTreasurePrefab, room);
+            }
+            else
+            {
+                InstantiateRoom(roomPrefab, room);
+            }
+        }
+    }
+
+    private GameObject InstantiateRoom(GameObject roomPrefab, Room room)
+    {
+        Vector3 roomPosition = new Vector3(room.Position.x * 10, room.Position.y * 10);
+        return Instantiate(roomPrefab, roomPosition, Quaternion.identity, transform);
     }
 
     private bool HasMoreThanOneNeighbor(Room room)
