@@ -11,12 +11,15 @@ public class Map : MonoBehaviour
     private int height = 10;
     [SerializeField]
     private int numberOfRooms = 10;
+    [SerializeField]
+    private GameObject roomPrefab;
 
     Room[,] map;
 
     private void Awake()
     {
         CreateMapLayout();
+        PlaceRooms();
     }
 
     private void CreateMapLayout()
@@ -65,6 +68,23 @@ public class Map : MonoBehaviour
                 neighbor.IsSelected = true;
                 roomsToVisit.Enqueue(neighbor);
                 rooms.Add(neighbor);
+            }
+        }
+    }
+
+    private void PlaceRooms()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Room room = map[x, y];
+
+                if (room.IsSelected)
+                {
+                    Vector3 roomPosition = new Vector3(room.Position.x * 10, room.Position.y * 10);
+                    Instantiate(roomPrefab, roomPosition, Quaternion.identity, transform);
+                }
             }
         }
     }
