@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Map : MonoBehaviour
@@ -18,8 +19,32 @@ public class Map : MonoBehaviour
 
     private void Awake()
     {
+        CreateNewMap();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            CreateNewMap();
+        }
+    }
+
+    public void CreateNewMap()
+    {
+        RemoveRooms();
         CreateMapLayout();
         PlaceRooms();
+    }
+
+    private void RemoveRooms()
+    {
+        List<Transform> rooms = transform.Cast<Transform>().ToList();
+
+        foreach (var child in rooms)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     private void CreateMapLayout()
