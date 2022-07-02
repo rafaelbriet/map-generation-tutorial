@@ -15,6 +15,10 @@ public class Map : MonoBehaviour
     private int numberOfRooms = 10;
     [Header("Rooms")]
     [SerializeField]
+    private float roomWidth = 10;
+    [SerializeField]
+    private float roomHeight = 10;
+    [SerializeField]
     private GameObject roomPrefab;
     [SerializeField]
     private GameObject roomBossPrefab;
@@ -173,7 +177,7 @@ public class Map : MonoBehaviour
 
     private GameObject InstantiateRoom(GameObject roomPrefab, Room room)
     {
-        Vector3 roomPosition = new Vector3(room.Position.x * 10, room.Position.y * 10);
+        Vector3 roomPosition = new Vector3(room.Position.x * roomWidth, room.Position.y * roomHeight);
         GameObject roomGameObject = Instantiate(roomPrefab, roomPosition, Quaternion.identity, transform);
         AddDoorsToRoom(roomGameObject, room);
         
