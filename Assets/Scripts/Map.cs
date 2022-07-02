@@ -49,50 +49,55 @@ public class Map : MonoBehaviour
 
     private void CreateMapLayout()
     {
-        map = InitializeMap();
+        int roomsCount = 0;
 
-        Room startingRoom = map[width / 2, height / 2];
-        startingRoom.IsSelected = true;
-
-        Queue<Room> roomsToVisit = new Queue<Room>();
-        roomsToVisit.Enqueue(startingRoom);
-
-        HashSet<Room> rooms = new HashSet<Room>();
-
-        while (roomsToVisit.Count > 0)
+        while (roomsCount < numberOfRooms)
         {
-            Room currentRoom = roomsToVisit.Dequeue();
-            List<Room> currentRoomNeighbors = GetNeighbors(currentRoom);
+            map = InitializeMap();
 
-            foreach (Room neighbor in currentRoomNeighbors)
+            Room startingRoom = map[width / 2, height / 2];
+            startingRoom.IsSelected = true;
+
+            Queue<Room> roomsToVisit = new Queue<Room>();
+            roomsToVisit.Enqueue(startingRoom);
+
+            roomsCount = 1;
+
+            while (roomsToVisit.Count > 0)
             {
-                if (neighbor.IsSelected)
+                Room currentRoom = roomsToVisit.Dequeue();
+                List<Room> currentRoomNeighbors = GetNeighbors(currentRoom);
+
+                foreach (Room neighbor in currentRoomNeighbors)
                 {
-                    continue;
+                    if (neighbor.IsSelected)
+                    {
+                        continue;
+                    }
+
+                    if (HasMoreThanOneNeighbor(neighbor))
+                    {
+                        continue;
+                    }
+
+                    bool hasEnoughRoom = roomsCount >= numberOfRooms;
+
+                    if (hasEnoughRoom)
+                    {
+                        continue;
+                    }
+
+                    bool shouldGiveUp = UnityEngine.Random.Range(0, 1f) < 0.5f;
+
+                    if (shouldGiveUp)
+                    {
+                        continue;
+                    }
+
+                    neighbor.IsSelected = true;
+                    roomsToVisit.Enqueue(neighbor);
+                    roomsCount++;
                 }
-
-                if (HasMoreThanOneNeighbor(neighbor))
-                {
-                    continue;
-                }
-
-                bool hasEnoughRoom = rooms.Count >= numberOfRooms;
-
-                if (hasEnoughRoom)
-                {
-                    continue;
-                }
-
-                bool shouldGiveUp = UnityEngine.Random.Range(0, 1f) < 0.5f;
-
-                if (shouldGiveUp)
-                {
-                    continue;
-                }
-
-                neighbor.IsSelected = true;
-                roomsToVisit.Enqueue(neighbor);
-                rooms.Add(neighbor);
             }
         }
     }
