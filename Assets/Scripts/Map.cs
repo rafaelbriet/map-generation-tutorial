@@ -6,18 +6,30 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
+    [Header("Map")]
     [SerializeField]
     private int width = 10;
     [SerializeField]
     private int height = 10;
     [SerializeField]
     private int numberOfRooms = 10;
+    [Header("Rooms")]
     [SerializeField]
     private GameObject roomPrefab;
     [SerializeField]
     private GameObject roomBossPrefab;
     [SerializeField]
     private GameObject roomTreasurePrefab;
+    [Header("Doors")]
+    [SerializeField]
+    private GameObject doorUpPrefab;
+    [SerializeField]
+    private GameObject doorDownPrefab;
+    [SerializeField]
+    private GameObject doorRightPrefab;
+    [SerializeField]
+    private GameObject doorLeftPrefab;
+
 
     private Room[,] map;
     private List<Room> deadEndRooms = new List<Room>();
@@ -162,7 +174,61 @@ public class Map : MonoBehaviour
     private GameObject InstantiateRoom(GameObject roomPrefab, Room room)
     {
         Vector3 roomPosition = new Vector3(room.Position.x * 10, room.Position.y * 10);
-        return Instantiate(roomPrefab, roomPosition, Quaternion.identity, transform);
+        GameObject roomGameObject = Instantiate(roomPrefab, roomPosition, Quaternion.identity, transform);
+        AddDoorsToRoom(roomGameObject, room);
+        
+        return roomGameObject;
+    }
+
+    private void AddDoorsToRoom(GameObject roomGameObject, Room room)
+    {
+        int up = room.Position.y + 1;
+
+        if (IsRoomValid(new Vector3Int(room.Position.x, up)))
+        {
+            ReplaceWallWithDoor(roomGameObject, "Up", doorUpPrefab);
+        }
+
+        int down = room.Position.y - 1;
+
+        if (IsRoomValid(new Vector3Int(room.Position.x, down)))
+        {
+            ReplaceWallWithDoor(roomGameObject, "Down", doorDownPrefab);
+        }
+
+        int right = room.Position.x + 1;
+
+        if (IsRoomValid(new Vector3Int(right, room.Position.y)))
+        {
+            ReplaceWallWithDoor(roomGameObject, "Right", doorRightPrefab);
+        }
+
+        int left = room.Position.x - 1;
+
+        if (IsRoomValid(new Vector3Int(left, room.Position.y)))
+        {
+            ReplaceWallWithDoor(roomGameObject, "Left", doorLeftPrefab);
+        }
+    }
+
+    private void ReplaceWallWithDoor(GameObject roomGameObject, string wallName, GameObject doorPrefab)
+    {
+        Transform wall = roomGameObject.transform.Find("Walls");
+        Transform wallPiece = wall.Find(wallName);
+        Instantiate(doorPrefab, wall, false);
+        Destroy(wallPiece.gameObject);
+    }
+
+    private bool IsRoomValid(Vector3Int position)
+    {
+        if (!IsRoomPositionValid(position))
+        {
+            return false;
+        }
+
+        Room room = map[position.x, position.y];
+
+        return room.IsSelected;
     }
 
     private bool HasMoreThanOneNeighbor(Room room)

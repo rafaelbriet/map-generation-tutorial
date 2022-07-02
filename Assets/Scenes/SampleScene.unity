@@ -242,6 +242,10 @@ MonoBehaviour:
   roomPrefab: {fileID: 3642142289418280711, guid: 032e0abf699fd1944882d41bd8a740d6, type: 3}
   roomBossPrefab: {fileID: 3642142289418280711, guid: 499127d2396ac8b4aa70c7d22ee93892, type: 3}
   roomTreasurePrefab: {fileID: 3642142289418280711, guid: 50073d46a9b27924aa41fc1adb5b5666, type: 3}
+  doorUpPrefab: {fileID: 3642142289418280711, guid: 729f4f598ab1552479a59a44adbf894a, type: 3}
+  doorDownPrefab: {fileID: 3642142289418280711, guid: 064f58344b6ddbc4086f49bd1d8d1e02, type: 3}
+  doorRightPrefab: {fileID: 3642142289418280711, guid: 66b14307c1e44b0409779c096ad23b67, type: 3}
+  doorLeftPrefab: {fileID: 3642142289418280711, guid: 7c1e7997aef436e45aa847c55cb776e0, type: 3}
 --- !u!4 &1505303594
 Transform:
   m_ObjectHideFlags: 0
