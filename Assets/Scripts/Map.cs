@@ -82,7 +82,7 @@ public class Map : MonoBehaviour
 
         while (roomsCount < numberOfRooms)
         {
-            map = InitializeMap();
+            InitializeMap();
             deadEndRooms.Clear();
 
             Room startingRoom = map[width / 2, height / 2];
@@ -309,18 +309,16 @@ public class Map : MonoBehaviour
         return output;
     }
 
-    private Room[,] InitializeMap()
+    private void InitializeMap()
     {
-        Room[,] output = new Room[width, height];
+        map = new Room[width, height];
 
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                output[x, y] = new Room(new Vector3Int(x, y));
+                map[x, y] = new Room(new Vector3Int(x, y));
             }
         }
-
-        return output;
     }
 }
